@@ -1,18 +1,36 @@
 import { useRef } from 'react'
 import PropTypes from 'prop-types'
 import { v4 as uuidV4 } from 'uuid'
+import { useSocket } from '../contexts/SocketProvider'
 
-function Login({ setRoom }) {
+function Login({ setRoom, setUser, user }) {
   const roomRef = useRef()
+  const userRef = useRef()
+  const socket = useSocket()
+
+  function addUser(userName, userRoom) {
+    setUser([...user, userName])
+    setRoom(userRoom)
+    socket.emit('add-user', { userName, userRoom })
+  }
 
   function handleJoinRoom(e) {
     e.preventDefault()
+    e.stopPropagation()
 
-    setRoom(roomRef.current.value)
+    const userName = userRef.current.value
+    const userRoom = roomRef.current.value
+
+    addUser(userName, userRoom)
   }
 
-  function createNewRoom() {
-    setRoom(uuidV4())
+  function handleCreateNewRoom(e) {
+    e.stopPropagation()
+
+    const userName = userRef.current.value
+    const userRoom = uuidV4()
+
+    addUser(userName, userRoom)
   }
 
   return (
@@ -30,12 +48,21 @@ function Login({ setRoom }) {
             className='border mx-2 p-2'
           />
         </label>
+        <label htmlFor='userName' className='mx-auto p-2'>
+          Enter User Name
+          <input
+            type='text'
+            ref={userRef}
+            id='userName'
+            className='border mx-2 p-2'
+          />
+        </label>
         <button type='submit' className='border w-2/4 mx-auto my-2 py-4'>
           Join Room
         </button>
         <button
           type='button'
-          onClick={createNewRoom}
+          onClick={handleCreateNewRoom}
           className='border w-2/4 mx-auto my-2 py-4'
         >
           Create New Game Room
@@ -46,7 +73,13 @@ function Login({ setRoom }) {
 }
 
 Login.propTypes = {
-  setRoom: PropTypes.func.isRequired
+  setRoom: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired,
+  user: PropTypes.arrayOf(PropTypes.string)
+}
+
+Login.defaultProps = {
+  user: []
 }
 
 export default Login

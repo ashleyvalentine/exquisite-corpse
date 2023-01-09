@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import io from 'socket.io-client'
+import { io } from 'socket.io-client'
 
 const SocketContext = React.createContext()
 

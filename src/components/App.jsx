@@ -1,25 +1,28 @@
 import GameDashboard from './GameDashboard'
 import Header from './Header'
 import Login from './Login'
-import { GameRoomProvider } from '../contexts/GameRoomProvider'
 import { SocketProvider } from '../contexts/SocketProvider'
 import useSessionStorage from '../hooks/useSessionStorage'
+import { GameRoomProvider } from '../contexts/GameRoomProvider'
 
 function App() {
   const [room, setRoom] = useSessionStorage('roomId', null)
+  const [user, setUser] = useSessionStorage('users', [])
 
-  const gameDashboard = (
-    <SocketProvider room={room}>
-      <GameRoomProvider>
-        <GameDashboard gameRoom={room} setRoom={setRoom} />
-      </GameRoomProvider>
-    </SocketProvider>
-  )
+  console.log('app', user)
+
+  const gameDashboard = <GameDashboard gameRoom={room} setRoom={setRoom} />
+
+  const login = <Login setRoom={setRoom} setUser={setUser} user={user} />
 
   return (
     <>
       <Header />
-      {room ? gameDashboard : <Login setRoom={setRoom} />}
+      <SocketProvider room={room}>
+        <GameRoomProvider user={user} setUser={setUser}>
+          {room ? gameDashboard : login}
+        </GameRoomProvider>
+      </SocketProvider>
     </>
   )
 }

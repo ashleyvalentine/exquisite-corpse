@@ -8,27 +8,31 @@ function useGameRoom() {
   return useContext(GameRoomContext)
 }
 
-function GameRoomProvider({ children }) {
+function GameRoomProvider({ user, setUser, children }) {
   const socket = useSocket()
 
   useEffect(() => {
     if (socket == null) return
 
-    socket.on('connect', () => {
-      console.log(socket.connected)
-      console.log(socket)
+    socket.on('new-user', (userName) => {
+      setUser([...user, userName])
+      console.log('new-user', user)
     })
   }, [socket])
 
   return (
-    <GameRoomContext.Provider value={socket}>
-      {children}
-    </GameRoomContext.Provider>
+    <GameRoomContext.Provider value={user}>{children}</GameRoomContext.Provider>
   )
 }
 
 GameRoomProvider.propTypes = {
+  user: PropTypes.arrayOf(PropTypes.string),
+  setUser: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired
+}
+
+GameRoomProvider.defaultProps = {
+  user: []
 }
 
 export { useGameRoom, GameRoomProvider }
