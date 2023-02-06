@@ -1,28 +1,50 @@
+import { useState, useEffect } from 'react'
+import io from 'socket.io-client'
 import GameDashboard from './GameDashboard'
 import Header from './Header'
 import Login from './Login'
-import { SocketProvider } from '../contexts/SocketProvider'
-import useSessionStorage from '../hooks/useSessionStorage'
-import { GameRoomProvider } from '../contexts/GameRoomProvider'
 
 function App() {
-  const [room, setRoom] = useSessionStorage('roomId', null)
-  const [user, setUser] = useSessionStorage('users', [])
+  const [room, setRoom] = useState()
+  const [users, setUsers] = useState({})
+  const [socket, setSocket] = useState(null)
 
-  console.log('app', user)
+  useEffect(() => {
+    const newSocket = io('http://localhost:3050')
 
-  const gameDashboard = <GameDashboard gameRoom={room} setRoom={setRoom} />
+    setSocket(newSocket)
+  }, [])
 
-  const login = <Login setRoom={setRoom} setUser={setUser} user={user} />
+  useEffect(() => {
+    if (socket === null) return
+
+    socket.on('room-data', ({ userData }) => {
+      console.log(userData)
+    })
+  }, [socket])
+
+  const gameDashboard = (
+    <GameDashboard
+      room={room}
+      setRoom={setRoom}
+      users={users}
+      setUser={setUsers}
+    />
+  )
+
+  const login = (
+    <Login
+      setRoom={setRoom}
+      setUsers={setUsers}
+      users={users}
+      socket={socket}
+    />
+  )
 
   return (
     <>
       <Header />
-      <SocketProvider room={room}>
-        <GameRoomProvider user={user} setUser={setUser}>
-          {room ? gameDashboard : login}
-        </GameRoomProvider>
-      </SocketProvider>
+      {room ? gameDashboard : login}
     </>
   )
 }

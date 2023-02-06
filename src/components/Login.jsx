@@ -1,17 +1,14 @@
 import { useRef } from 'react'
-import PropTypes from 'prop-types'
 import { v4 as uuidV4 } from 'uuid'
-import { useSocket } from '../contexts/SocketProvider'
 
-function Login({ setRoom, setUser, user }) {
+function Login({ setRoom, socket }) {
   const roomRef = useRef()
   const userRef = useRef()
-  const socket = useSocket()
 
   function addUser(userName, userRoom) {
-    setUser([...user, userName])
-    setRoom(userRoom)
-    socket.emit('add-user', { userName, userRoom })
+    socket.emit('add-user', { userName, userRoom }, (response) => {
+      console.log(response.status)
+    })
   }
 
   function handleJoinRoom(e) {
@@ -22,15 +19,18 @@ function Login({ setRoom, setUser, user }) {
     const userRoom = roomRef.current.value
 
     addUser(userName, userRoom)
+    setRoom(userRoom)
   }
 
   function handleCreateNewRoom(e) {
+    e.preventDefault()
     e.stopPropagation()
 
     const userName = userRef.current.value
     const userRoom = uuidV4()
 
     addUser(userName, userRoom)
+    setRoom(userRoom)
   }
 
   return (
@@ -70,16 +70,6 @@ function Login({ setRoom, setUser, user }) {
       </form>
     </main>
   )
-}
-
-Login.propTypes = {
-  setRoom: PropTypes.func.isRequired,
-  setUser: PropTypes.func.isRequired,
-  user: PropTypes.arrayOf(PropTypes.string)
-}
-
-Login.defaultProps = {
-  user: []
 }
 
 export default Login

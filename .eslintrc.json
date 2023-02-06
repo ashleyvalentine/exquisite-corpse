@@ -24,6 +24,7 @@
     "quotes": ["warn", "single"],
     "newline-before-return": "warn",
     "newline-after-var": "warn",
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "react/prop-types": [0]
   }
 }
