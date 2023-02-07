@@ -1,12 +1,27 @@
 import Canvas from './Canvas'
 
-function GameDashboard({ setRoom }) {
+function GameDashboard({ setRoom, room, users }) {
   function handleLeaveRoom() {
     setRoom(null)
   }
 
+  console.log(users, 'gameDashboard')
+
+  const userNames = users.map((user) => <li key={user.id}>{user.name}</li>)
+
   return (
-    <div className='flex flex-col'>
+    <section className='flex flex-col'>
+      <div className='flex flex-row'>
+        <section className='border w-2/6 my-2 mx-2 p-4'>
+          <h3 className='font-bold mx-auto'>Game Info</h3>
+          <span>{room && `room-id: ${room}`}</span>
+          <ul className='pt-4'>
+            <li>Current Players:</li>
+            {userNames}
+          </ul>
+        </section>
+        <Canvas />
+      </div>
       <button
         type='button'
         onClick={handleLeaveRoom}
@@ -14,8 +29,7 @@ function GameDashboard({ setRoom }) {
       >
         Leave Room
       </button>
-      <Canvas />
-    </div>
+    </section>
   )
 }
 

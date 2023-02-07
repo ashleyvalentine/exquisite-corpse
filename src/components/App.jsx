@@ -6,7 +6,7 @@ import Login from './Login'
 
 function App() {
   const [room, setRoom] = useState()
-  const [users, setUsers] = useState({})
+  const [users, setUsers] = useState([])
   const [socket, setSocket] = useState(null)
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function App() {
     if (socket === null) return
 
     socket.on('room-data', ({ userData }) => {
-      console.log(userData)
+      setUsers(userData)
     })
   }, [socket])
 
