@@ -1,8 +1,8 @@
 import Canvas from './Canvas'
 
-function GameDashboard({ setRoom, room, users }) {
+function GameDashboard({ room, users }) {
   function handleLeaveRoom() {
-    setRoom(null)
+    window.location.reload()
   }
 
   console.log(users, 'gameDashboard')

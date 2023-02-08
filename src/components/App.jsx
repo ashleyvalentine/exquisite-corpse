@@ -3,6 +3,7 @@ import io from 'socket.io-client'
 import GameDashboard from './GameDashboard'
 import Header from './Header'
 import Login from './Login'
+import MobileDisplay from './MobileDisplay'
 
 function App() {
   const [room, setRoom] = useState()
@@ -42,10 +43,11 @@ function App() {
   )
 
   return (
-    <>
-      <Header />
-      {room ? gameDashboard : login}
-    </>
+    <MobileDisplay />
+    // <>
+    //   <Header />
+    //   {room ? gameDashboard : login}
+    // </>
   )
 }
 
