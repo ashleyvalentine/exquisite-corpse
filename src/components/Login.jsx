@@ -20,13 +20,18 @@ function Login({ setRoom, socket }) {
     (e) => {
       e.preventDefault()
 
-      if (errorAlert) return
-
       const userName = userRef.current.value
       const userRoom =
         e.target.id === 'joinRoom' ? roomRef.current.value : uuidV4()
 
       addUser(userName, userRoom)
+
+      console.log(errorAlert, 'clicked')
+
+      if (errorAlert) {
+        return
+      }
+
       setRoom(userRoom)
     },
     [errorAlert, userRef, roomRef, addUser, setRoom]
@@ -38,6 +43,7 @@ function Login({ setRoom, socket }) {
         <form className='flex flex-col'>
           <FormInput id='roomId' label='Enter Room Id:' inputRef={roomRef} />
           <FormInput id='name' label='Enter Username:' inputRef={userRef} />
+          {errorAlert && <p>{errorAlert}</p>}
           <Button
             eventHandler={handleJoinOrCreateRoom}
             id='joinRoom'
