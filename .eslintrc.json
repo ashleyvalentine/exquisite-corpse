@@ -14,7 +14,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "prettier"],
+  "plugins": ["react", "prettier", "react-hooks"],
   "rules": {
     "no-console": "off",
     "no-unused-vars": "warn",
@@ -25,6 +25,8 @@
     "newline-before-return": "warn",
     "newline-after-var": "warn",
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
-    "react/prop-types": [0]
+    "react/prop-types": [0],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   }
 }
