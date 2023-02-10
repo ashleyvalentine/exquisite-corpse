@@ -8,8 +8,8 @@ function useCanvas() {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
 
-    ctx.lineWidth = 5
-    ctx.strokeStyle = 'blue'
+    ctx.lineWidth = 2
+    ctx.strokeStyle = 'black'
     ctxRef.current = ctx
   })
 
