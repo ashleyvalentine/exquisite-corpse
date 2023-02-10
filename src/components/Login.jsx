@@ -4,17 +4,23 @@ import FormInput from './FormInput'
 import Button from './Button'
 
 function Login({ setRoom, socket }) {
+  // add check for valid room string
   const [errorAlert, setErrorAlert] = useState(null)
   const roomRef = useRef()
   const userRef = useRef()
 
-  function addUser(userName, userRoom) {
-    socket.emit('add-user', { userName, userRoom }, (error) => {
-      if (error) {
-        setErrorAlert(error)
-      }
-    })
-  }
+  const addUser = useCallback(
+    (userName, userRoom) => {
+      socket.emit('add-user', { userName, userRoom }, (error) => {
+        if (error) {
+          setErrorAlert(error)
+        } else {
+          setRoom(userRoom)
+        }
+      })
+    },
+    [setRoom, socket]
+  )
 
   const handleJoinOrCreateRoom = useCallback(
     (e) => {
@@ -25,16 +31,8 @@ function Login({ setRoom, socket }) {
         e.target.id === 'joinRoom' ? roomRef.current.value : uuidV4()
 
       addUser(userName, userRoom)
-
-      console.log(errorAlert, 'clicked')
-
-      if (errorAlert) {
-        return
-      }
-
-      setRoom(userRoom)
     },
-    [errorAlert, userRef, roomRef, addUser, setRoom]
+    [addUser]
   )
 
   return (
