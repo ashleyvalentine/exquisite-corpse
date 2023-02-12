@@ -29,6 +29,7 @@ function DesktopDisplay() {
       setRoom={setRoom}
       users={users}
       setUser={setUsers}
+      socket={socket}
     />
   )
 

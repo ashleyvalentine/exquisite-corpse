@@ -1,51 +1,97 @@
-import { useCallback, useState } from 'react'
-import useCanvas from '../hooks/useCanvas'
+import { useCallback, useState, useEffect, useRef } from 'react'
 
-// import PropTypes from 'prop-types'
+function UserCanvas({ socket, room }) {
+  const canvasRef = useRef(null)
+  const [context, setContext] = useState(null)
+  const [current, setCurrent] = useState({})
+  const [drawing, setDrawing] = useState(false)
 
-function UserCanvas() {
-  const [isDrawing, setIsDrawing] = useState(false)
-  const [canvasRef, ctxRef] = useCanvas()
+  useEffect(() => {
+    setContext(canvasRef.current.getContext('2d'))
+  }, [])
 
-  const setWidth = () => {
+  const setCanvasWidth = () => {
     const canvasWidth = window.innerWidth * 0.65
 
     return canvasWidth
   }
 
-  const width = setWidth()
-
-  const setHeight = (w) => {
+  const setCanvasHeight = (w) => {
     const canvasHeight = w * 1.5
 
     return canvasHeight
   }
 
-  const height = setHeight(width)
+  const width = setCanvasWidth()
+  const height = setCanvasHeight(width)
+
+  const drawLine = useCallback(
+    (x0, y0, x1, y1, emit) => {
+      context.beginPath()
+      context.moveTo(x0, y0)
+      context.lineTo(x1, y1)
+      context.stroke()
+      context.closePath()
+
+      if (!emit) return
+
+      socket.emit('drawing', {
+        x0: x0 / width,
+        y0: y0 / height,
+        x1: x1 / width,
+        y1: y1 / height,
+        room
+      })
+    },
+    [context, socket, height, width, room]
+  )
 
   const startDrawing = (e) => {
-    ctxRef.current.beginPath()
-    ctxRef.current.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
-    setIsDrawing(true)
+    setDrawing(true)
+    const { offsetX, offsetY } = e.nativeEvent
+
+    setCurrent({ x: offsetX, y: offsetY })
   }
 
-  const stopDrawing = () => {
-    ctxRef.current.closePath()
-    setIsDrawing(false)
+  const stopDrawing = (e) => {
+    if (!drawing) return
+    const { offsetX, offsetY } = e.nativeEvent
+
+    setDrawing(false)
+    drawLine(current.x, current.y, offsetX, offsetY, true)
   }
 
   const draw = (e) => {
-    if (!isDrawing) {
-      return
-    }
+    if (!drawing) return
+    const { offsetX, offsetY } = e.nativeEvent
 
-    ctxRef.current.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
-    ctxRef.current.stroke()
+    drawLine(current.x, current.y, offsetX, offsetY, true)
+    setCurrent({ x: offsetX, y: offsetY })
   }
 
+  const onDrawingEvent = useCallback(
+    (data) => {
+      drawLine(
+        data.x0 * width,
+        data.y0 * height,
+        data.x1 * width,
+        data.y1 * height
+      )
+    },
+    [drawLine, height, width]
+  )
+
+  useEffect(() => {
+    if (socket === null) return
+
+    socket.on('drawing', onDrawingEvent)
+
+    return () => socket.off('drawing', onDrawingEvent)
+  }, [socket, onDrawingEvent])
+
   const clearCanvas = useCallback(() => {
-    ctxRef.current.clearRect(0, 0, width, height)
-  }, [ctxRef, width, height])
+    context.clearRect(0, 0, width, height)
+  }, [context, width, height])
 
   return (
     <section>
@@ -68,7 +114,5 @@ function UserCanvas() {
     </section>
   )
 }
-
-// Canvas.propTypes = {}
 
 export default UserCanvas

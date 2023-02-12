@@ -1,9 +1,9 @@
 import UserCanvas from './UserCanvas'
 
-function Canvas() {
+function Canvas({ socket, room }) {
   return (
     <div className='flex flex-col my-2 mr-2'>
-      <UserCanvas />
+      <UserCanvas socket={socket} room={room} />
     </div>
   )
 }

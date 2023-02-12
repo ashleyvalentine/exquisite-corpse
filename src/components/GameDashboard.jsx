@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import Canvas from './Canvas'
 import Button from './Button'
 
-function GameDashboard({ room, users }) {
+function GameDashboard({ room, users, socket }) {
   const handleLeaveRoom = useCallback(() => {
     window.location.reload()
   }, [])
@@ -24,7 +24,7 @@ function GameDashboard({ room, users }) {
           text='Leave Room'
         />
       </section>
-      <Canvas />
+      <Canvas socket={socket} room={room} />
     </section>
   )
 }
