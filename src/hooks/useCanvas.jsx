@@ -11,7 +11,7 @@ function useCanvas() {
     ctx.lineWidth = 2
     ctx.strokeStyle = 'black'
     ctxRef.current = ctx
-  })
+  }, [])
 
   return [canvasRef, ctxRef]
 }
