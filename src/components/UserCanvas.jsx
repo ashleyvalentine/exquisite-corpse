@@ -6,8 +6,6 @@ function UserCanvas({ socket, room }) {
   const [current, setCurrent] = useState({})
   const [drawing, setDrawing] = useState(false)
 
-  console.log(context)
-
   useEffect(() => {
     setContext(canvasRef.current.getContext('2d'))
   }, [])
