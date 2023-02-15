@@ -24,7 +24,7 @@ function GameDashboard({ room, users, socket }) {
           text='Leave Room'
         />
       </section>
-      <Canvas socket={socket} room={room} />
+      <Canvas socket={socket} room={room} users={users} />
     </section>
   )
 }

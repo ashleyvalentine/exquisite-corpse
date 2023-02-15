@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect, useRef } from 'react'
 
-function UserCanvas({ socket, room }) {
+function UserCanvas({ socket, room, user }) {
   const canvasRef = useRef(null)
   const [context, setContext] = useState(null)
   const [current, setCurrent] = useState({})
@@ -17,7 +17,7 @@ function UserCanvas({ socket, room }) {
   }
 
   const setCanvasHeight = (w) => {
-    const canvasHeight = w * 1.5
+    const canvasHeight = w * 0.5
 
     return canvasHeight
   }
@@ -47,6 +47,9 @@ function UserCanvas({ socket, room }) {
   )
 
   const startDrawing = (e) => {
+    if (!user) return
+    if (socket.id !== user.id) return
+
     setDrawing(true)
     const { offsetX, offsetY } = e.nativeEvent
 
