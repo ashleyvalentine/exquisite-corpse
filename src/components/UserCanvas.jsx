@@ -26,7 +26,11 @@ function UserCanvas({ socket, room, user }) {
   const height = setCanvasHeight(width)
 
   const drawLine = useCallback(
-    (x0, y0, x1, y1, emit) => {
+    (x0, y0, x1, y1, emit, dataUser) => {
+      if (dataUser) {
+        if (dataUser.id !== user.id) return
+      }
+
       context.beginPath()
       context.moveTo(x0, y0)
       context.lineTo(x1, y1)
@@ -40,6 +44,7 @@ function UserCanvas({ socket, room, user }) {
         y0: y0 / height,
         x1: x1 / width,
         y1: y1 / height,
+        user,
         room
       })
     },
@@ -78,7 +83,9 @@ function UserCanvas({ socket, room, user }) {
         data.x0 * width,
         data.y0 * height,
         data.x1 * width,
-        data.y1 * height
+        data.y1 * height,
+        false,
+        data.user
       )
     },
     [drawLine, height, width]
