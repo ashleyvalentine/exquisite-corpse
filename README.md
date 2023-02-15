@@ -8,7 +8,7 @@ If you would like to learn more about the origins of the game:
 
 **Link to server repository:** <a href="https://github.com/fakehouseplant/exquisite-corpse-server">Server Code Here.</a>
 
-![app login screen and demo of drawing functionality](https://github.com/fakehouseplant/exquisite-corpse/blob/main/projectUpdate.gif | width=100)
+![app login screen and demo of drawing functionality](https://github.com/fakehouseplant/exquisite-corpse/blob/main/projectUpdate.gif)
 
 ## How It's Made:
 
